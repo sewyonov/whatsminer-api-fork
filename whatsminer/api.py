@@ -215,15 +215,14 @@ def crypt(word, salt):
 # Adapted from: https://stackoverflow.com/a/17668009
 def recv_all(sock, n):
     # Helper function to recv n bytes
-    sock.setblocking(True)
-    data = bytearray()
-    while len(data) < n:
-        packet = sock.recv(n - len(data))
-        if not packet:
-            if data:
-                return data
-            return None
-        data.extend(packet)
+  BUFF_SIZE = 4096 # 4 KiB
+    data = b''
+    while True:
+        part = sock.recv(BUFF_SIZE)
+        data += part
+        if len(part) < BUFF_SIZE:
+            # either 0 or end of data
+            break
     return data
 
 
